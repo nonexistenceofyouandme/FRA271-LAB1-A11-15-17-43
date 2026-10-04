@@ -1,0 +1,62 @@
+% =========================================================================
+% สคริปต์ Lab 1.3: Homing Sequence (เปรียบเทียบองศาดิบ vs องศาจาก Home)
+% =========================================================================
+clear; clc; close all;
+
+% 1. ดึงข้อมูลจาก Workspace ที่ได้จาก Simulink
+try
+    t = evalin('base', 'out.tout');
+    homing_cmd = squeeze(double(evalin('base', 'out.homing_cmd_out')));
+    deg_relative = squeeze(double(evalin('base', 'out.deg_relative_out')));
+    unwrap_raw = squeeze(double(evalin('base', 'out.unwrap_raw_out')));
+catch
+    t = evalin('base', 'tout');
+    homing_cmd = squeeze(double(evalin('base', 'homing_cmd_out')));
+    deg_relative = squeeze(double(evalin('base', 'deg_relative_out')));
+    unwrap_raw = squeeze(double(evalin('base', 'unwrap_raw_out')));
+end
+
+% 2. แปลง unwrap_count เป็นองศาดิบ (Absolute Degrees)
+% *** แก้ไขตัวเลขให้ตรงกับฮาร์ดแวร์ (AMT X4 = 8192, BOURNS X4 = 96) ***
+TOTAL_PULSES_PER_REV = 8192; 
+deg_raw = -(unwrap_raw / TOTAL_PULSES_PER_REV) * 360;
+
+% 3. พล็อตกราฟเปรียบเทียบ 2 ชั้น
+figure('Name', 'Homing Sequence Analysis', 'Position', [150, 100, 800, 500]);
+
+% ซับพล็อต 1: สัญญาณทริกเกอร์ (ปุ่ม Set Home)
+subplot(3, 1, 1);
+plot(t, homing_cmd, 'r', 'LineWidth', 2);
+title('Homing Trigger Signal');
+ylabel('State');
+ylim([-0.2 1.2]);
+yticks([0 1]);
+yticklabels({'OFF', 'ON (Set Home)'});
+grid on; ax = gca; ax.GridAlpha = 0.5;
+
+% ซับพล็อต 2: เปรียบเทียบองศาดิบ กับ องศาที่อ้างอิงจุด Home
+subplot(3, 1, [2, 3]);
+plot(t, deg_raw, '--k', 'LineWidth', 1.5); hold on;
+plot(t, deg_relative, 'b', 'LineWidth', 2);
+
+% มาร์คจุดที่เกิดการกดปุ่มเซ็ต Home
+home_idx = find(homing_cmd == 1, 1, 'first');
+if ~isempty(home_idx)
+    plot(t(home_idx), deg_relative(home_idx), 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+    text(t(home_idx) + 0.2, 10, '\leftarrow Position Reset to 0^\circ', 'Color', 'r', 'FontSize', 11, 'FontWeight', 'bold');
+    
+    % ลากเส้นประแนวตั้งเพื่อเน้นจุดที่เกิด Action
+    xline(t(home_idx), ':r', 'LineWidth', 1.5);
+end
+
+title('Angular Position Comparison (Raw vs Relative to Home)');
+xlabel('Time (s)');
+ylabel('Degrees (\circ)');
+legend('Absolute Position (องศาเทียบกับจุดเปิดเครื่อง)', 'Relative Position (องศาเทียบกับ Home)', 'Location', 'Best');
+grid on; ax = gca; ax.GridAlpha = 0.5;
+
+% 4. เซฟผลลัพธ์ลง CSV สำหรับแนบรายงาน
+results_table = table(t, homing_cmd, deg_raw, deg_relative, ...
+    'VariableNames', {'Time_s', 'Homing_Trigger', 'Degrees_Raw', 'Degrees_From_Home'});
+writetable(results_table, 'Lab1_3_HomingSequence_Full.csv');
+fprintf('>> บันทึกไฟล์ Lab1_3_HomingSequence_Full.csv เรียบร้อย\n');

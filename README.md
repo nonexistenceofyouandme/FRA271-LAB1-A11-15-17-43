@@ -1,11 +1,11 @@
 # FRA271 Robotic Modeling and Experimentation
-### Laboratory Workspaces & Experimental Data Acquisition Suite
+### Lab Workspaces & Experiment
 **จัดทำขึ้นเพื่อการส่งงานรายวิชา FRA271 Robotic Modeling and Experimentation**  
 *Institute of Field Robotics (FIBO), King Mongkut's University of Technology Thonburi (KMUTT)*
 
 ---
 
-## 📌 ภาพรวมโครงสร้างระบบ (System Architecture)
+## 📌 ภาพรวมโครงสร้างไฟล์
 
 Repository นี้เป็นชุดรวมไฟล์แบบจำลอง Simulink (`.slx`) และสคริปต์ควบคุมการทดลองใน MATLAB (`.m` / `.mlx`) สำหรับการศึกษาคุณลักษณะ การสอบเทียบ และการต่อประสานฮาร์ดแวร์เซนเซอร์ประเภทต่างๆ ในวิชา FRA271 โดยระบบทำงานประสานกัน 2 ระดับ:
 

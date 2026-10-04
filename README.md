@@ -5,23 +5,6 @@
 
 ---
 
-## 📌 ภาพรวมโครงสร้างไฟล์
-
-Repository นี้เป็นชุดรวมไฟล์แบบจำลอง Simulink (`.slx`) และสคริปต์ควบคุมการทดลองใน MATLAB (`.m` / `.mlx`) สำหรับการศึกษาคุณลักษณะ การสอบเทียบ และการต่อประสานฮาร์ดแวร์เซนเซอร์ประเภทต่างๆ ในวิชา FRA271 โดยระบบทำงานประสานกัน 2 ระดับ:
-
-1. **Hardware Interfacing & Simulink Modeling Layer (`.slx`):**
-   - รับสัญญาณแอนะล็อกและดิจิทัลจากบอร์ดไมโครคอนโทรลเลอร์ผ่านการสื่อสารอนุกรมความเร็วสูง (`Host Serial Rx`, Baud rate 2,000,000 bps)
-   - การปรับสภาพสัญญาณเบื้องต้น (Signal Conditioning) เช่น Gain Scaling[cite: 80, 84, 93], Moving Average Filter และ Simscape Electrical Physical Domain
-   - ส่งออกตัวแปรสัญญาณไปยัง MATLAB Workspace ผ่านบล็อก `To Workspace`[cite: 80, 84, 90, 93]
-
-2. **Automated Test Executive & Analytics Layer (`.m` / `.mlx`):**
-   - ควบคุมขั้นตอนการทดสอบแบบเป็นลำดับ (Step-by-step) และแบบนำทางอัตโนมัติ (Auto-Guided)
-   - บันทึกข้อมูลดิบความละเอียดสูงพร้อมประทับเวลา (Timestamped CSV)[cite: 81, 82, 83, 85, 91, 92]
-   - คำนวณค่าทางสถิติ ขจัดสัญญาณรบกวน (Noise Averaging)[cite: 81, 83, 91] และแก้ปัญหาขอบเขตตัวนับ (16-bit Timer Wrap-around)
-   - สร้างสมการสอบเทียบเชิงเส้น (Linear Calibration: $y = mx + c$) และวิเคราะห์ Error (MAE / Linearity Curve)[cite: 72, 82, 83, 91]
-
----
-
 ## 📂 โครงสร้าง Repository (Directory Structure)
 
 ```text
